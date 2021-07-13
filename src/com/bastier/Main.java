@@ -186,14 +186,16 @@ public class Main {
 
         System.out.println(" Afficher la moyenne des salaires dans la ville de Lyon");
 
-        Double moySalaireLyon =
+        //Double moySalaireLyon =
         personneList.stream()
                 .filter(personne -> personne.getVille().equals("Lyon"))
-                .mapToDouble(personne -> personne.getSalaire())
+                .mapToDouble(Personne::getSalaire)
                 .average()
-                .orElse(0);
+                .stream()
+                .forEach(System.out::println);
 
-        System.out.println(moySalaireLyon);
+
+        //System.out.println(moySalaireLyon);
 
     }
 }
