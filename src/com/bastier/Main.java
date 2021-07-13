@@ -1,4 +1,4 @@
-package com.bastier.javastreamsexo;
+package com.bastier;
 
 import java.io.IOException;
 import java.nio.file.Files;

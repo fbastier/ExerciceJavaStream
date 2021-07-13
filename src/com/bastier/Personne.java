@@ -1,4 +1,4 @@
-package com.bastier.javastreamsexo;
+package com.bastier;
 
 public class Personne {
 
