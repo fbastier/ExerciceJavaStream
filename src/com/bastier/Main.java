@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         // Exercice 1
         System.out.println("Exercice 1");
@@ -72,7 +72,7 @@ public class Main {
 
         System.out.println("##3##");
         // Afficher le nom des personnes nées avant 1990, triès par ordre alphabétique sur nom, afficher le nombre
-        //List<Personne> question3 =
+
         personnes.stream()
                 .filter(an -> an.getAnnee_naissance()<1990)
                 .forEachOrdered(personne -> System.out.println(personne.getNom()));
@@ -106,24 +106,94 @@ public class Main {
                 .forEach(System.out::println);
 
 
+        System.out.println("##EXERCICE 3-B - Question  1, 2  ##");
         // import du fichier txt
-        Pattern pattern = Pattern.compile(", ");
 
+        Pattern pattern = Pattern.compile(", ");
+        List<Personne> personneList = new ArrayList<>();
         try(Stream<String> lines = Files.lines(Path.of("/Users/java/Desktop/personnes.txt"))) {
-          List<Personne> personneList = lines.skip(9)
-                                            .skip(1)
-                                            .map( line -> { String[] arr = pattern.split(line);
-                                                            return new Personne(
-                                                                    arr[1],
-                                                                    arr[0],
-                                                                    arr[4],
-                                                                    Integer.parseInt(arr[2]));
-                                                                    })
-                                            .collect(Collectors.toList());
-            System.out.println("Lecture file : " + personneList);
+          personneList = lines.skip(1)
+                                .limit(8)
+                                .map( line -> { String[] arr = pattern.split(line);
+                                    return new Personne(arr[1],
+                                                        arr[0],
+                                                        arr[4],
+                                                        Integer.parseInt(arr[2]),
+                                                        Double.parseDouble((arr[3])),
+                                                        arr[5]);
+                                                        })
+                                .collect(Collectors.toList());
+          personneList.forEach(System.out::println);
         } catch (IOException ioException) {
         }
+
+
+        System.out.println("##EXERCICE 3-B - Question  3  ##");
+
+        System.out.println(" les personnes nées avant 1991 ");
+        personneList.stream()
+                .filter(an -> an.getAnnee_naissance()<1991)
+                .forEach(System.out::println);
+
+        System.out.println("Afficher le nom des personnes nées en 1995");
+
+        personneList.stream()
+                .filter(an -> an.getAnnee_naissance()==1995)
+                .forEachOrdered(personne -> System.out.println(personne.getNom()));
+
+
+        System.out.println("Afficher le nom des personnes nées avant 1990, triès par ordre alphabétique sur nom, afficher le nombre");
+
+        personneList.stream()
+                .sorted(Comparator.comparing(Personne::getNom))
+                .filter(an -> an.getAnnee_naissance()<1990)
+                .forEachOrdered(personne -> System.out.println(personne.getNom()));
+
+        Long nbPersonnes =
+            personneList.stream()
+                    .filter(an -> an.getAnnee_naissance()<1990)
+                    .count();
+        System.out.println(nbPersonnes);
+
+        System.out.println("Afficher tous les noms & prenoms triés sur le nom puis le prénom");
+
+        personneList.stream()
+                .sorted(Comparator.comparing(Personne::getPrenom))
+                .sorted(Comparator.comparing(Personne::getNom))
+                .forEach(personne -> System.out.println(personne.getNom() + " " + personne.getPrenom()));
+
+        System.out.println("Afficher les personnes ayant un genre F et un nom commençant par la lettre J");
+
+        personneList.stream()
+                .filter(personne -> personne.getGenre().equals("F"))
+                .filter(personne -> personne.getNom().startsWith("J"))
+                .forEachOrdered(System.out::println);
+
+        System.out.println("Transformer le genre en minuscule, afficher les personnes ayant un genre h.");
+
+        personneList.stream()
+                .peek(u -> u.setGenre(u.getGenre().toLowerCase()))
+                .filter(v -> v.getGenre().equals("h"))
+                .forEach(System.out::println);
+
+        System.out.println(" Afficher l'année de naissance de la personne la plus jeune");
+        Personne personnePlusJeune =
+        personneList.stream()
+                    .max(Comparator.comparing(Personne::getAnnee_naissance))
+                    .orElseThrow(NoSuchElementException::new);
+
+        System.out.println(personnePlusJeune.getAnnee_naissance());
+
+        System.out.println(" Afficher la moyenne des salaires dans la ville de Lyon");
+
+        Double moySalaireLyon =
+        personneList.stream()
+                .filter(personne -> personne.getVille().equals("Lyon"))
+                .mapToDouble(personne -> personne.getSalaire())
+                .average()
+                .orElse(0);
+
+        System.out.println(moySalaireLyon);
+
     }
-
-
 }
