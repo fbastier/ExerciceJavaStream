@@ -1,4 +1,4 @@
-package com.bastier.CollectionsExceptions;
+package com.bastier.javastreamsexo;
 
 public class Personne {
 
